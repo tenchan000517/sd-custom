@@ -22,6 +22,10 @@ def create_unified_tab():
             "prompt": "",
             "negative": ""
         },
+        "高品質アニメ（推奨）": {
+            "prompt": "masterpiece, best quality, high quality, extremely detailed, anime style, cel shading, clean lineart, detailed face, beautiful detailed eyes, glossy hair, shiny hair, soft lighting, professional illustration, vibrant colors",
+            "negative": "lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry, artist name, photo, photorealistic, realistic, 3d render, sketch, unfinished"
+        },
         "アニメ風": {
             "prompt": "anime style, high quality, detailed, vibrant colors, illustration",
             "negative": "photo, photorealistic, realistic, 3d render"
@@ -43,12 +47,12 @@ def create_unified_tab():
             "negative": "photo, 2d, flat, hand drawn"
         },
         "ジブリ風": {
-            "prompt": "studio ghibli style, anime, hand drawn, miyazaki, soft colors",
-            "negative": "photo, 3d, cg, dark"
+            "prompt": "studio ghibli style, anime, hand drawn, miyazaki, soft colors, beautiful background",
+            "negative": "photo, 3d, cg, dark, modern"
         },
         "ピクサー風": {
-            "prompt": "pixar style, 3d animation, disney, colorful, cute",
-            "negative": "photo, 2d, anime, realistic"
+            "prompt": "pixar style, 3d animation, disney, colorful, cute, professional render",
+            "negative": "photo, 2d, anime, realistic, dark"
         },
     }
 
@@ -105,9 +109,9 @@ def create_unified_tab():
             mask_blur=4 if mask else 0,
             inpainting_fill=1,  # original
             denoising_strength=strength,
-            sampler_name="Euler a",  # 高速で品質の良いサンプラー
+            sampler_name="DPM++ 2M Karras",  # 高品質サンプラー
             steps=steps_count,
-            cfg_scale=7.0,
+            cfg_scale=8.0,  # プロンプトへの従順度アップ
             width=width,
             height=height,
             seed=-1,
@@ -166,7 +170,7 @@ def create_unified_tab():
                     )
                     style = gr.Dropdown(
                         choices=list(STYLES.keys()),
-                        value="アニメ風",
+                        value="高品質アニメ（推奨）",
                         label="🎨 変換スタイル"
                     )
 
@@ -192,7 +196,7 @@ def create_unified_tab():
                     strength = gr.Slider(
                         minimum=0.1,
                         maximum=1.0,
-                        value=0.6,
+                        value=0.70,
                         step=0.05,
                         label="変換の強さ",
                         info="小さい値 = 元画像に近い、大きい値 = 変換が強い"
@@ -200,7 +204,7 @@ def create_unified_tab():
                     steps_count = gr.Slider(
                         minimum=10,
                         maximum=50,
-                        value=20,
+                        value=35,
                         step=5,
                         label="品質（ステップ数）",
                         info="大きいほど高品質だが時間がかかる"
@@ -269,7 +273,8 @@ def create_unified_tab():
             3. **実行ボタンをクリック**: 数秒〜数十秒で完成！
 
             ### スタイル説明
-            - **アニメ風**: アニメ・イラスト風に変換
+            - **高品質アニメ（推奨）**: 商業レベルの高品質アニメイラスト。細部まで精密、セルアニメ調
+            - **アニメ風**: アニメ・イラスト風に変換（シンプル版）
             - **水彩画風**: 柔らかい水彩画タッチ
             - **油絵風**: 油絵・クラシック絵画風
             - **漫画風**: 漫画・モノクロ風
@@ -300,8 +305,14 @@ def create_unified_tab():
 
             ## 詳細設定
 
-            - **変換の強さ**: 0.3〜0.7 が推奨。小さいほど元画像に近く、大きいほど変換が強い
-            - **品質（ステップ数）**: 20で十分、より高品質なら30〜40（時間がかかります）
+            - **変換の強さ**: 0.6〜0.75 が推奨。小さいほど元画像に近く、大きいほど変換が強い
+            - **品質（ステップ数）**: 35がデフォルト（高品質）、より高品質なら40〜50（時間がかかります）
+
+            ### 推奨設定（高品質アニメ）
+            - **サンプラー**: DPM++ 2M Karras（自動設定）
+            - **変換の強さ**: 0.70
+            - **品質**: 35ステップ
+            - **モデル**: Counterfeit-V3.0 または animagineXLV3 推奨
             """)
 
     return [(ui, "かんたん編集", "simple_editor")]
